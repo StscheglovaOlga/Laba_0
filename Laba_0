@@ -1,0 +1,143 @@
+# Laba_0
+package Zadanie_0;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+public class Obrabotka_Texta {
+	private static String fname = "Задание 0.txt";	
+	private static  String k[] = new String[13];
+	private static final String separator = " ";
+	private static int wow;
+	public static void main(String[] args) {
+	    ReadR();
+	    String[]t=new String[13];
+	    for (int i=0; i<13; i++) {
+		    t[i]=Palindrom(k[i]);	
+	    }
+	    int[] ks=Kolvo();
+	    int[] BB=Bait(ks);
+	    double[] HH=Hartli(ks);
+	    double[] SS=Shennon(ks);
+	    WriteTabl();
+	    VvodVTabl(t, ks, BB, HH, SS);
+	}
+	public static void ReadR() {
+		File file = new File(fname);
+		try(BufferedReader br = 
+				new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));) {
+			String line = "";
+			int i=0;
+			while ((line = br.readLine()) != null) {
+				String[] elements = line.split(separator);
+				k[i]=elements[0];
+				i++;
+			}
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}	
+	}
+	public static String Palindrom(String g){ 
+		String plus="+"; 
+		String minus="-"; 
+		for (int i = 0; i< g.length()/2; i++) { 
+		    if (g.toLowerCase().charAt(i) != g.toLowerCase().charAt(g.length() - 1 - i)) { 
+		        return minus; 
+		    }
+		} 
+		return plus; 
+    }
+	public static int[] Kolvo(){
+		int[] r=new int[13];
+	    for (int i=0; i<13; i++){
+	    	r[i]=0;
+	    	char[] y=k[i].toCharArray();
+	    	for (int p=0; p<y.length; p++) {
+	    	    r[i]++;
+	    	}
+	    }
+	    return r;
+	}
+	public static int[] Bait(int[] o) {
+		int[] op=new int [13];
+	    for (int i=0; i<13; i++) {
+	    	op[i]=o[i]*2;
+	    }
+	    return op;
+	}
+	public static double[] Hartli(int[] t) {     
+	    double[] h=new double[13];
+	    for (int i=0; i<13; i++) {
+	    	char[] e=k[i].toCharArray();
+	    	int sch=0;
+	    	while (e[0]!=0) {
+	    	    e=Iskl(e[0], e); 
+	    	    sch++;
+	    	}
+	    	h[i]=t[i]*Math.log(sch)/Math.log(2);
+	    }
+	    return h;
+	}
+	public static char[] Iskl(char iskomoe, char[] massiv) {  
+		for (int y=0; y<massiv.length; y++) {
+	        for (int i=0; i<massiv.length; i++) {
+	    	    if (massiv[i]==iskomoe) {
+	    		    for (int z=i; z<massiv.length-1; z++) {
+	    		        massiv[z]=massiv[z+1];
+	    		    }
+	    		    massiv[massiv.length-1]=0;
+	    	    }
+	        }
+	    }
+	    return massiv;
+	}
+	public static double[] Shennon(int[] t) {
+		double[] Sh=new double[13]; 
+		double F;
+		for (int i=0; i<13; i++) {
+		    char[] S=k[i].toCharArray();
+		    while (S[0]!=0) {
+	    	    S=Noliki(S[0], S);
+	    	    F=(double)wow/(S.length);
+	    	    Sh[i]=Sh[i]-F*Math.log(F)/Math.log(2);
+	    	}
+		}
+		return Sh;
+	}
+	public static char[] Noliki(char bukwa, char[] massiv) {
+		wow=0;
+		for (int y=0; y<massiv.length; y++) {
+	        for (int i=0; i<massiv.length; i++) {
+	    	    if (massiv[i]==bukwa ) {
+	    	    	wow++;
+	    		    for (int z=i; z<massiv.length-1; z++) {
+	    		        massiv[z]=massiv[z+1];
+	    		    }
+	    		    massiv[massiv.length-1]=0;
+	    	    }
+	        }
+	    }
+	    return massiv;    	
+	}
+	public static void WriteTabl() {
+		System.out.println(" --------------------------------------------------------------------------------------------------------------------------------");
+		System.out.printf("%s%-3s%s%-56s%s%11s%-56s%s%n", "|", "№", "|", " слово","|", "|", "       Количество информации", "|");
+		System.out.println(" --------------------------------------------------------------------------------------------------------------------------------");
+		System.out.printf("%s%4s%57s%11s%-11s%s%14s%s%14s%s%14s%s%n", "|", "|", "|", "|", "количество", "|", "байт, размер", "|", "бит,    ", "|", "бит,     ", "|");
+		System.out.printf("%s%4s%57s%-10s%s%-11s%s%14s%s%-14s%s%-14s%s%n", "|", "|", "|", "палиндром", "|", "символов", "|", "в программе", "|", "  по Хартли", "|", "  по Шеннону", "|");
+		System.out.println(" --------------------------------------------------------------------------------------------------------------------------------");
+	}
+	public static void VvodVTabl(String[] Palindrom, int[] Kolichestvo, int[] Bait, double[] Hartli, double[] Shennon) {
+		for (int i=0; i<13; i++) {
+			System.out.printf("%s%-3s%s%-56s%s%-10s%s%-11s%s%14s%s%14.2f%s%14.9f%s%n", "|", i+1, "|" , k[i], "|", Palindrom[i], "|", Kolichestvo[i], "|", Bait[i], "|",  Hartli[i], "|", Shennon[i], "|");
+			System.out.println(" --------------------------------------------------------------------------------------------------------------------------------");
+		}
+	}
+}
